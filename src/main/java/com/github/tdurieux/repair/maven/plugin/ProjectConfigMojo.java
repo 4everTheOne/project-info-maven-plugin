@@ -104,13 +104,17 @@ public class ProjectConfigMojo extends AbstractMojo {
     }
 
     private int parseJavaVersion(String javaVersion) {
-        int complianceLevel;
-        String version = javaVersion.substring(2, 3);
-        if (version.equals(".")) {
-            version = javaVersion.substring(0, 2);
+        // Check if the java version has dots. e.g. "1.8", "1.8.0_282", ...
+        if (javaVersion.contains(".")) {
+            String version = javaVersion.substring(2, 3);
+            if (version.equals(".")) {
+                version = javaVersion.substring(0, 2);
+            }
+            return Integer.parseInt(version);
+        } else {
+            // Otherwise if the java version is "8", "9", ...
+            return Integer.parseInt(javaVersion);
         }
-        complianceLevel = Integer.parseInt(version);
-        return complianceLevel;
     }
 
     private File getSurefireReportsDirectory( MavenProject subProject ) {
